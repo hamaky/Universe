@@ -6,5 +6,10 @@ var npmGloballyInstalled = '${TestCommand("npm" , "--version")}'
 var npmCmd = '${ npmGloballyInstalled ? "npm" : Path.Combine(nodeDir, "npm.cmd") }'
 
 node-install once='installNode'
+
+- // Ensure nodeDir exists. npmCommand is likely a package installation targeting that directory.
+exec program='cmd' commandline='/C mkdir ${nodeDir}' if='!IsLinux && !Directory.Exists(nodeDir)'
+exec program='md ${nodeDir}' if='IsLinux && !Directory.Exists(nodeDir)'
+
 exec program='cmd' commandline='/C ${npmCmd} ${npmCommand}' workingdir='${npmDir}' if='!IsLinux'
 exec program='${npmCmd}' commandline='${npmCommand}' workingdir='${npmDir}' if='IsLinux'
